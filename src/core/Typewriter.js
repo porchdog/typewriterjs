@@ -33,6 +33,7 @@ class Typewriter {
   options = {
     strings: null,
     cursor: '|',
+    hideCursorWhenNotRunning: false,
     delay: 'natural',
     pauseFor: 1500,
     deleteSpeed: 'natural',
@@ -108,7 +109,9 @@ class Typewriter {
     this.state.elements.container.innerHTML = '';
 
     this.state.elements.container.appendChild(this.state.elements.wrapper);
-    this.state.elements.container.appendChild(this.state.elements.cursor);
+    if (!this.options.hideCursorWhenNotRunning) {
+      this.state.elements.container.appendChild(this.state.elements.cursor);
+    }
   }
 
   /**
@@ -116,6 +119,9 @@ class Typewriter {
    */
   start = () => {
     this.state.eventLoopPaused = false;
+    if (this.options.hideCursorWhenNotRunning) {
+      this.state.elements.container.appendChild(this.state.elements.cursor);
+    }
     this.runEventLoop();
 
     return this;
@@ -505,6 +511,9 @@ class Typewriter {
 
     if(!this.state.eventQueue.length) {
       if(!this.options.loop) {
+        if (this.options.hideCursorWhenNotRunning) {
+          this.state.elements.cursor.remove();
+        }
         return;
       }
 
